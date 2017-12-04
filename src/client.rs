@@ -7,10 +7,8 @@ use std::io::Cursor;
 use byteorder::{ReadBytesExt, WriteBytesExt, BigEndian};
 use std::io::prelude::*;
 use std::net::TcpStream;
+use error::RocketErr;
 
-#[derive(Copy, Clone, Debug)]
-/// The `RocketErr` Type. This is the main error type.
-pub struct RocketErr {}
 
 #[derive(Debug)]
 enum RocketState {
@@ -83,7 +81,10 @@ impl Rocket {
     /// let mut rocket = Rocket::connect("localhost", 1338);
     /// ```
     pub fn connect(host: &str, port: u16) -> Result<Rocket, RocketErr> {
-        let stream = TcpStream::connect((host, port)).expect("Failed to connect");
+        let stream = match TcpStream::connect((host, port)) {
+            Ok(stream) => stream,
+            Err(_) => return Err(RocketErr::ConnectionError)
+        };
 
         let mut rocket = Rocket {
             stream: stream,
@@ -92,9 +93,12 @@ impl Rocket {
             tracks: Vec::new(),
         };
 
-        rocket.handshake().expect("Failed to handshake");
+        rocket.handshake()?;
 
-        rocket.stream.set_nonblocking(true).expect("Failed to set nonblocking mode");
+        match rocket.stream.set_nonblocking(true) {
+            Err(_) => return Err(RocketErr::Other("Failed to set nonblocking mode")),
+            Ok(()) => {}
+        }
 
         Ok(rocket)
     }
@@ -259,7 +263,7 @@ impl Rocket {
         if read_greeting == server_greeting {
             Ok(())
         } else {
-            Err(RocketErr {})
+            Err(RocketErr::Other("Failed handshake."))
         }
     }
 }

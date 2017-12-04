@@ -6,5 +6,7 @@ extern crate byteorder;
 pub mod interpolation;
 pub mod track;
 pub mod client;
+mod error;
 
-pub use client::{Rocket, RocketErr, Event};
+pub use client::{Rocket, Event};
+pub use error::RocketErr;
