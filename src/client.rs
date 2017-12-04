@@ -43,6 +43,10 @@ pub struct Rocket {
     tracks: Vec<Track>,
 }
 
+pub trait SyncTrackContainer {
+   fn get_track(&self, name: &str) -> Option<&Track>;
+}
+
 impl Rocket {
     /// Construct a new Rocket.
     ///
@@ -127,12 +131,6 @@ impl Rocket {
         self.tracks.iter_mut().find(|t| t.get_name() == name).unwrap()
     }
 
-    /// Get Track by name.
-    ///
-    /// You should use `get_track_mut` to create a track.
-    pub fn get_track(&self, name: &str) -> Option<&Track> {
-        self.tracks.iter().find(|t| t.get_name() == name)
-    }
 
     /// Send a SetRow message.
     ///
@@ -267,3 +265,21 @@ impl Rocket {
         }
     }
 }
+
+impl SyncTrackContainer for Rocket {
+
+    /// Get Track by name.
+    ///
+    /// You should use `get_track_mut` to create a track.
+    fn get_track(&self, name: &str) -> Option<&Track> {
+        self.tracks.iter().find(|t| t.get_name() == name)
+    }
+
+}
+
+
+
+
+
+
+
