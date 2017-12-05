@@ -53,6 +53,17 @@ impl Track {
         }
     }
 
+    fn get_key_positions_for_row(&self, row: u32) -> (usize, usize) {
+        if row < self.keys[0].row {
+            (0,0)
+        } else {
+            match self.keys.iter().position(|k| row < k.row) {
+                Some(pos) => ((pos - 1).max(0), pos),
+                None => (self.keys.len() - 1, self.keys.len() - 1),
+            }
+        }
+    }
+
     /// Insert or update a key on a track.
     pub fn set_key(&mut self, key: Key) {
         if let Some(pos) = self.get_exact_position(key.row) {
@@ -82,20 +93,10 @@ impl Track {
             return 0.0;
         }
 
-        let lower_row = row.floor() as u32;
+        let (lower_pos, higher_pos) = self.get_key_positions_for_row(row.floor() as u32);
 
-        if lower_row <= self.keys[0].row {
-            return self.keys[0].value;
-        }
-
-        if lower_row >= self.keys[self.keys.len() - 1].row {
-            return self.keys[self.keys.len() - 1].value;
-        }
-
-        let pos = self.get_insert_position(lower_row).unwrap() - 1;
-
-        let lower = &self.keys[pos];
-        let higher = &self.keys[pos + 1];
+        let lower = &self.keys[lower_pos];
+        let higher = &self.keys[higher_pos];
 
         let t = (row - (lower.row as f32)) / ((higher.row as f32) - (lower.row as f32));
         let it = lower.interpolation.interpolate(t);
