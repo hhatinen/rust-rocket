@@ -3,10 +3,13 @@
 
 extern crate byteorder;
 
-pub mod interpolation;
-pub mod track;
-pub mod client;
+mod interpolation;
+mod track;
+mod client;
+mod rocket_player;
 mod error;
 
-pub use client::{Rocket, Event};
+pub use client::{RocketEditor, Event, SyncTrackContainer};
+pub use track::Track;
+pub use rocket_player::RocketPlayer;
 pub use error::RocketErr;

@@ -36,18 +36,19 @@ enum ReceiveResult {
 
 #[derive(Debug)]
 /// The `Rocket` type. This contains the connected socket and other fields.
-pub struct Rocket {
+pub struct RocketEditor {
     stream: TcpStream,
     state: RocketState,
     cmd: Vec<u8>,
     tracks: Vec<Track>,
 }
 
+
 pub trait SyncTrackContainer {
    fn get_track(&self, name: &str) -> Option<&Track>;
 }
 
-impl Rocket {
+impl RocketEditor {
     /// Construct a new Rocket.
     ///
     /// This constructs a new rocket and connect to localhost on port 1338.
@@ -64,8 +65,8 @@ impl Rocket {
     ///
     /// let mut rocket = Rocket::new();
     /// ```
-    pub fn new() -> Result<Rocket, RocketErr> {
-        Rocket::connect("localhost", 1338)
+    pub fn connect_default() -> Result<RocketEditor, RocketErr> {
+        RocketEditor::connect("localhost", 1338)
     }
 
     /// Construct a new Rocket.
@@ -84,13 +85,13 @@ impl Rocket {
     ///
     /// let mut rocket = Rocket::connect("localhost", 1338);
     /// ```
-    pub fn connect(host: &str, port: u16) -> Result<Rocket, RocketErr> {
+    pub fn connect(host: &str, port: u16) -> Result<RocketEditor, RocketErr> {
         let stream = match TcpStream::connect((host, port)) {
             Ok(stream) => stream,
             Err(_) => return Err(RocketErr::ConnectionError)
         };
 
-        let mut rocket = Rocket {
+        let mut rocket = RocketEditor {
             stream: stream,
             state: RocketState::New,
             cmd: Vec::new(),
@@ -266,7 +267,7 @@ impl Rocket {
     }
 }
 
-impl SyncTrackContainer for Rocket {
+impl SyncTrackContainer for RocketEditor {
 
     /// Get Track by name.
     ///

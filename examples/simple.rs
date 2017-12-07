@@ -1,9 +1,9 @@
 extern crate rust_rocket;
 
-use rust_rocket::{Rocket, Event};
+use rust_rocket::{RocketEditor, Event};
 
 fn main() {
-    let mut rocket = Rocket::new().unwrap();
+    let mut rocket = RocketEditor::connect_default().unwrap();
     rocket.get_track_mut("test");
     rocket.get_track_mut("test2");
     rocket.get_track_mut("a:test2");
