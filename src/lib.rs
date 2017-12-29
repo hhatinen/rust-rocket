@@ -2,6 +2,8 @@
 //! It is designed to work as a client library for GNU Rocket.
 
 extern crate byteorder;
+#[macro_use] extern crate serde_derive;
+extern crate serde_xml_rs;
 
 mod interpolation;
 mod track;

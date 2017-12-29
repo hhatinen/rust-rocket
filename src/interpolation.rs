@@ -1,6 +1,6 @@
 //! This module contains anything related to interpolation.
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Deserialize)]
 /// The `Interpolation` Type.
 /// This represents the various forms of interpolation that can be performed.
 pub enum Interpolation {

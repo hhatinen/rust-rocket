@@ -2,12 +2,19 @@
 
 use interpolation::*;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Deserialize)]
 /// The `Key` Type.
 pub struct Key {
     row: u32,
     value: f32,
     interpolation: Interpolation,
+}
+
+/// The `Track` Type. This is a collection of `Key`s with a name.
+#[derive(Debug, Deserialize)]
+pub struct Track {
+    name: String,
+    keys: Vec<Key>,
 }
 
 impl Key {
@@ -19,13 +26,6 @@ impl Key {
             interpolation: interp,
         }
     }
-}
-
-#[derive(Debug)]
-/// The `Track` Type. This is a collection of `Key`s with a name.
-pub struct Track {
-    name: String,
-    keys: Vec<Key>,
 }
 
 impl Track {
